@@ -1,4 +1,4 @@
-# FYP_SUBMISSION_SCRIPTS
+# FYP SUBMISSION SCRIPTS
 This repository contains all code neccesary to replicate the results included in the master's thesis submitted in partial recognition of the MEng at Imperial College London
 
 ## List of requirements:
@@ -7,3 +7,5 @@ The list of python package requirements has been included in `requirements.txt`.
 # Primary Scripts:
 
 # `TFC_3D.py`
+This code uses the theory of functional connections package to model the 3 dimensional Equations of Motion.
+<p style>  Test <p>
