@@ -20,5 +20,12 @@ This code uses the DEEPXDE package to model either 1D, 2D or 3D equations of mot
 Note that the 2D and 3D versions converge sporadically for $\Delta t$/tnc \> 0.1
 
 **Execution Command** : `DEEPXDE_PINN_training.py <RunType>` 
-  - \<NumRUNs\> : Number of runs to be executed for each parameter configuration. Specify 1 if single run or any larger value in order to average out runtime or random     initialisation
-  - \<RunType\> : Specifies what problem to solve. Must be one of [_1D, 2D , 3D ]
+  - \<RunType\> : Specifies what problem to solve. Must be one of [ 1D, 2D , 3D ]
+
+## `DEEPXDE_PINN_training.py`
+This code uses the DEEPXDE package to model either 1D, 2D or 3D equations of motion.
+
+Note that the 2D and 3D versions converge sporadically for $\Delta t$/tnc \> 0.1
+
+**Execution Command** : `DEEPXDE_PINN_training.py <RunType>` 
+  - \<RunType\> : Specifies what problem to solve. Must be one of [ 1D, 2D , 3D ]
