@@ -21,4 +21,4 @@ Note that the 2D and 3D versions converge sporadically for $\Delta t$/tnc \> 0.1
 
 **Execution Command** : `DEEPXDE_PINN_training.py <RunType>` 
   - \<NumRUNs\> : Number of runs to be executed for each parameter configuration. Specify 1 if single run or any larger value in order to average out runtime or random     initialisation
-  - \<RunType\> : Specifies what problem to solve. Must be [_'1D', '2D' , '3D_]
+  - \<RunType\> : Specifies what problem to solve. Must be one of [_1D, 2D , 3D ]
