@@ -9,4 +9,4 @@ The list of python package requirements has been included in `requirements.txt`.
 # `TFC_3D.py`
 This code uses the theory of functional connections package to model the 3 dimensional Equations of Motion.
 
-<u> Execution Command <u> : python3 TFC_3D.py <NumRUNs> <IncludeJ2> 
+<ins> Execution Command <ins> : python3 TFC_3D.py \<NumRUNs\> \<IncludeJ2\> 
