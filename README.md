@@ -8,4 +8,9 @@ The list of python package requirements has been included in `requirements.txt`.
 
 # `TFC_3D.py`
 This code uses the theory of functional connections package to model the 3 dimensional Equations of Motion.
-<p style>  Test <p>
+<p style="text-align:left;color:#ffffff ;font-size:20px;border-radius:0%;"> 
+  Execution Command:
+<p>
+ <p style="text-align:left;color:#3eb310 ;font-size:20px;border-radius:0%;"> 
+  Execution Command:
+<p>
