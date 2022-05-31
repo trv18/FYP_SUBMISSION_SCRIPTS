@@ -15,11 +15,13 @@ This code uses the theory of functional connections package to model the 3 dimen
   - <config\>    [\-c]: Specify desired configuration to execute. Choose from:
       - _SingleTFC_ : A single lambert problem using TFC model
       - _SingleXTFC_: A single lambert problem using XTFC model
-      \
+      
+      
       - _PolyOrder_ : Analyse the effect of Polynomial Order on TFC performance.      
       - _PolyRemove_: Analyse the effect of Polynomial Order Removed on TFC performance.
       - _PolyOrder_ : Analyse the effect of Number of Points on TFC performance.
-      \
+      
+      
       - _PolyOrderXTFC_ : Analyse the effect of Polynomial Order on XTFC performance.      
       - _PolyRemoveXTFC_: Analyse the effect of Polynomial Order Removed on XTFC performance.
       - _PolyOrderXTFC_ : Analyse the effect of Number of Points on XTFC performance.
