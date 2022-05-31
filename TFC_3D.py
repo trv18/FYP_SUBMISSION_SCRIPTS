@@ -1,3 +1,4 @@
+from ctypes.wintypes import BOOLEAN
 import sys
 
 import jax.numpy         as np
@@ -37,8 +38,33 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 n = len(sys.argv) 
 print("\nName of Python script:", sys.argv[0])
 
-num_runs = int(sys.argv[1]) # number of runs for each config
-Include_J2 = float(sys.argv[2]) # include J2 perturbation?
+import argparse
+
+parser=argparse.ArgumentParser(
+    description='''My Description. And what a lovely description it is. ''',
+    epilog="""All is well that ends well.""")
+
+parser.add_argument('-n','--num_runs', type=int, default=1, help='Number of Iterations per training config')
+parser.add_argument('-J2','--Include_J2', type=int, default=0, choices={0,1}, help='Specify whether to include J2 perturbations in analysis!')
+parser.add_argument('-c','--config', type=str, default={'SingleTFC'}, choices={'SingleTFC', 
+                                                                               'SingleXTFC', 
+                                                                               'SeedsXTFC', 
+                                                                               'PolyOrderTFC',
+                                                                               'CompEffTFC',
+                                                                               'HeatMapTFC',
+                                                                               'PolyRemoveTFC',
+                                                                               'PointsTFC',
+                                                                               'PolyOrderXTFC',
+                                                                               'PolyRemoveXTFC',
+                                                                               'PointsXTFC'}, help='Specify what program program you wish to run')
+args=parser.parse_args()
+
+num_runs = args.num_runs
+Include_J2 = args.Include_J2
+config = args.config
+
+# num_runs = int(sys.argv[2]) # number of runs for each config
+# Include_J2 = float(sys.argv[3]) # include J2 perturbation?
 
 class LambertEq():
     def __init__(self, print=True):
@@ -551,9 +577,9 @@ def train_models(points=[51], poly_orders=[50], poly_removes=[2], basis_funcs=['
 #------------------------------------------------------------------------
 
 
-if 1:
+if config=='SingleTFC':
     TrainingDf, TrainingStats = train_models(poly_orders=[50], points=[51], save_orbit=True, plot=True, run_type='TFC')
-if 0:
+if config=='SingleXTFC':
     TrainingDf, TrainingStats = train_models(points=[100], poly_orders=[100], poly_removes=[-1], basis_funcs=['ELMTanh'], methods = ["lstsq"],  save_orbit=True, plot=True, run_type='XTFC')
 
 
@@ -565,7 +591,7 @@ if 0:
 #------------------------------------------------------------------------
 # 
 ### Sweep over random seeds ### 
-if 0:
+if config=='SeedsXTFC':
 
     TrainingDf, TrainingStats = train_models(points=[200], poly_orders=[100], poly_removes=[-1], basis_funcs=['ELMTanh'], methods = ["lstsq"],  save_orbit=False, plot=False)
     bins = onp.logspace(-11, -4, 14)
@@ -600,7 +626,7 @@ if 0:
     fig.savefig('./Plot/Seed_Error.pdf', bbox_inches='tight')
 
 ### Sweep over polynomial orders ###
-if 0:
+if config=='PolyOrderTFC':
     poly_orders=list(range(2,200, 2))
     TrainingDf, TrainingStats = train_models(poly_orders=poly_orders, points=[200])
 
@@ -612,7 +638,7 @@ if 0:
     fig.savefig('./Plot/poly_orders.pdf', bbox_inches='tight')
 
 ### Find Computational Efficiency ###
-if 0:
+if config=='CompEff':
     poly_orders=list(range(2,200, 10))
     TrainingDf, TrainingStats = train_models(poly_orders=poly_orders, points=[200])
 
@@ -624,7 +650,7 @@ if 0:
     fig.savefig('./Plot/CompEff.pdf', bbox_inches='tight')
 
 ### Make Heat Map for Loss ###
-if 0:
+if config=='HeatmapTFC':
     poly_orders=list(range(2,200, 1))
     points=list(range(3,200, 1))
 
@@ -651,7 +677,7 @@ if 0:
     fig.savefig('./Plot/Heatmap.pdf', bbox_inches='tight')
 
 ### Make Heat Map for CompEff ###
-if 0:
+if config=='HeatmapCompEff':
     poly_orders=list(range(2,200, 5))
     points=list(range(3,200, 5))
 
@@ -679,7 +705,7 @@ if 0:
     fig.savefig('./Plot/HeatmapCompEff.pdf', bbox_inches='tight')
 
 ### Sweep over removed bias functions ###
-if 0:
+if config=='PolyRemoveTFC':
     poly_removes=list(range(-1,10, 1))
     TrainingDf, TrainingStats = train_models(poly_removes=poly_removes)
 
@@ -691,7 +717,7 @@ if 0:
     fig.savefig('./Plot/poly_removes.pdf', bbox_inches='tight')
 
 ### Sweep over number of training points ###
-if 0:
+if config=='PointsTFC':
     points=list(range(1,200, 1))
     TrainingDf, TrainingStats = train_models(points=points)
     
@@ -706,7 +732,7 @@ if 0:
 ############ X-TFC ###############################
 
 ### Sweep over polynomial orders ###
-if 0:
+if config=='PolyOrderXTFC':
     poly_orders=list(range(1,200, 2))
     TrainingDf, TrainingStats = train_models(points=[100], poly_orders=poly_orders, poly_removes=[-1], basis_funcs=['ELMTanh'], methods = ["lstsq"])
 
@@ -718,7 +744,7 @@ if 0:
     fig.savefig('./Plot/NumNeurons.pdf', bbox_inches='tight')
 
 ### Sweep over removed bias functions ###
-if 0:
+if config=='PolyRemoveXTFC':
     poly_removes=list(range(-1,10, 1))
     TrainingDf, TrainingStats = train_models(points=[100], poly_orders=[50], poly_removes=poly_removes, basis_funcs=['ELMTanh'], methods = ["lstsq"])
 
@@ -730,7 +756,7 @@ if 0:
     fig.savefig('./Plot/poly_removesXTFC.pdf', bbox_inches='tight')
 
 ### Sweep over number of training points ###
-if 0:
+if config=='PointsXTFC':
     points=list(range(1,200, 1))
     TrainingDf, TrainingStats = train_models(points=points, poly_orders=[50], poly_removes=[-1], basis_funcs=['ELMTanh'], methods = ["lstsq"])
     
@@ -740,4 +766,5 @@ if 0:
     ax.grid(which='major', color='#DDDDDD', linewidth=0.8)
     format_axes(ax=ax, fontsize=20, xlabel = 'Number of Training Points ', ylabel=r'Relative Error Magnitude', scale_legend=True)
     fig.savefig('./Plot/PointsXTFC.pdf', bbox_inches='tight')
+
 
