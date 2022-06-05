@@ -41,8 +41,21 @@ This code uses the DEEPXDE package to model either 1D, 2D or 3D equations of mot
 
 Note that the 2D and 3D versions converge sporadically for $\Delta t$/tnc \> 0.1
 
-**Execution Command** : `DEEPXDE_PINN_training.py <RunType>` 
+**Execution Command** : 
+```bash 
+DEEPXDE_PINN_training.py <RunType>
+```
   - \<RunType\> : Specifies what problem to solve. Must be one of [ 1D, 2D , 3D ]
 
+## `DNN_Training.py`
+  This code used tensorflow to train a neural network using specified model configurations. It uses the WandB API to keep track of training runs and some alteration may be required to configure the code to run with the user's WandB account. Alternatively the sections of the code that require WandB can be commented out. 
+  
+ **Execution Command** : 
+```bash 
+DNN_Training.py <RunType>
+```
+
+  - \<RunType\> : Specifies whether to train specified  to solve. Must be one of [ 1D, 2D , 3D ]
+  - 
 ## `Visualise_Tools.py` and `OrbMech_Utilities.py`
 A variety of tools and functions to aide in execution of the code. 
