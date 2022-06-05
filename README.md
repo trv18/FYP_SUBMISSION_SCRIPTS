@@ -14,7 +14,10 @@ python3 TFC_3D.py -h
 ```
 for positional arguments help
 
-**Execution Command** : `python3 TFC_3D.py -n <NumRuNs> -J2 <IncludeJ2> -c <config>` 
+**Execution Command** : 
+```bash 
+python3 TFC_3D.py -n <NumRuNs> -J2 <IncludeJ2> -c <config>
+```` 
   - <NumRuNs\>   [\-n]: Number of runs to be executed for each parameter configuration. Specify 1 if single run or any larger value in order to average out runtime or random initialisation
   - <IncludeJ2\> [\-J2]: Specifies whether to include J2 purturbation in calculations. Must tbe either 1 or 0
   - <config\>    [\-c]: Specify desired configuration to execute. Choose from:
