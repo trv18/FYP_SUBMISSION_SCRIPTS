@@ -7,7 +7,12 @@ The list of python package requirements has been included in `requirements.txt`.
 # Primary Scripts:
 
 ## `TFC_3D.py`
-This code uses the theory of functional connections package to model the 3 dimensional Equations of Motion. `python3 TFC_3D.py -h` for positional arguments help
+This code uses the theory of functional connections package to model the 3 dimensional Equations of Motion. 
+
+```bash
+python3 TFC_3D.py -h
+```
+for positional arguments help
 
 **Execution Command** : `python3 TFC_3D.py -n <NumRuNs> -J2 <IncludeJ2> -c <config>` 
   - <NumRuNs\>   [\-n]: Number of runs to be executed for each parameter configuration. Specify 1 if single run or any larger value in order to average out runtime or random initialisation
