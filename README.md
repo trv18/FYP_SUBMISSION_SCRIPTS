@@ -58,6 +58,29 @@ python3 DNN_Training.py <RunType> [<NumRuns>]
   - \<RunType\> : Specifies whether to train specified model or conduct WandB hyperparameter sweep. Must be one of [_single_, _sweep_]
   - \<NumRuns\> : _Optional Parameter_. Specifies how many models to train if conducting WandB sweep. 
 
+Configs must be declared on lines 83-104 in the following format:
+```python
+config1 = config_generator(optimizer='Adamax',
+                            batch_size=3010,    
+                            lr=0.01635, 
+                            Layer_Units= [50, 50, 50, 50, 50, 50, 50, 50],
+                            epochs=10000)
 
+# config1 = config_generator(optimizer='Adamax',
+#                             batch_size=3010,    
+#                             lr=0.01635, 
+#                             Layer_Units= [1000, 1000],
+#                             epochs=10000)
+
+
+config2 = config_generator(optimizer='Adamax',
+                            batch_size=3010,
+                            lr=0.01635, 
+                            Layer_Units= [200,200,200,200,200],
+                            epochs=10000)
+
+
+configs = [config1, config2]
+```
 ## `Visualise_Tools.py`,  `OrbMech_Utilities.py`, `DNN_Tools`
 A variety of tools and functions to aide in execution of the code. 
