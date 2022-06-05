@@ -83,24 +83,17 @@ python3 DNN_Training.py <RunType> [<NumRuns>]
 
 Configs must be declared on lines 83-104 in the following format:
 ```python
-config1 = config_generator(optimizer='Adamax',
-                            batch_size=3010,    
-                            lr=0.01635, 
+config1 = config_generator(Optimizer='Adamax',
+                            Batch_Size=3010,    
+                            Lr=0.01635, 
                             Layer_Units= [50, 50, 50, 50, 50, 50, 50, 50],
-                            epochs=10000)
-
-# config1 = config_generator(optimizer='Adamax',
-#                             batch_size=3010,    
-#                             lr=0.01635, 
-#                             Layer_Units= [1000, 1000],
-#                             epochs=10000)
-
-
-config2 = config_generator(optimizer='Adamax',
-                            batch_size=3010,
-                            lr=0.01635, 
+                            Epochs=10000)
+                            
+config2 = config_generator(Optimizer='Adamax',
+                            Batch_Size=3010,
+                            Lr=0.01635, 
                             Layer_Units= [200,200,200,200,200],
-                            epochs=10000)
+                            Epochs=10000)
 
 
 configs = [config1, config2]
