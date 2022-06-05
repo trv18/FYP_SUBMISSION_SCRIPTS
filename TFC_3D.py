@@ -1,4 +1,3 @@
-from ctypes.wintypes import BOOLEAN
 import sys
 
 import jax.numpy         as np
@@ -202,7 +201,7 @@ class LambertEq(LambertEq):
             print(f'Desired TOF:  {self.TOF[0]} days\n')
 
 
-def TrainModel(l, ub, points=100, poly_order=30, poly_removed=2, basis_func='CP', method="pinv", plot=True, save_orbit=False, run_type='TFC'):
+def TrainModel(l, ub, points=100, poly_order=30, poly_removed=2, basis_func='CP', method="pinv", plot=True, save_orbit=False, run_type='TFC', skip=False):
 
     ########### Define Constants ################
     mu = l.mu
@@ -233,6 +232,18 @@ def TrainModel(l, ub, points=100, poly_order=30, poly_removed=2, basis_func='CP'
     H = myTfc.H
     H0 = lambda x: H(np.zeros_like(x))
     Hf = lambda x: H(ub*np.ones_like(x))
+
+    if skip:
+        print('skipping forward by 500')
+        for i in range(1000):
+            myTfc = utfc(N,nC,m, basis=basis_func, x0=0,xf=ub)
+            x = myTfc.x # Collocation points from the TFC class
+
+            # Get the basis functions from the TFC class
+            H = myTfc.H
+            H0 = lambda x: H(np.zeros_like(x))
+            Hf = lambda x: H(ub*np.ones_like(x))
+        skip=False
 
     #------------------------------------------------------------------------
     #------------------------------------------------------------------------
@@ -287,7 +298,7 @@ def TrainModel(l, ub, points=100, poly_order=30, poly_removed=2, basis_func='CP'
             res_rx = lambda x, xi: abs(d2rx(x,xi) + mu*rx(x,xi)/((rx(x, xi)**2 +  ry(x,xi)**2 + rz(x,xi)**2)**(3/2))) + penalty*(v_angle(x,xi)<90)
             res_ry = lambda x, xi: abs(d2ry(x,xi) + mu*ry(x,xi)/((rx(x, xi)**2 +  ry(x,xi)**2 + rz(x,xi)**2)**(3/2))) + penalty*(v_angle(x,xi)<90)
             res_rz = lambda x, xi: abs(d2rz(x,xi) + mu*rz(x,xi)/((rx(x, xi)**2 +  ry(x,xi)**2 + rz(x,xi)**2)**(3/2))) + penalty*(v_angle(x,xi)<90)
-
+            
     else:
         r_norm = lambda x, xi: (rx(x, xi)**2 +  ry(x,xi)**2 + rz(x,xi)**2)**(1/2)
         res_rx = lambda x, xi: d2rx(x,xi) + mu*rx(x,xi)/(r_norm(x,xi)**3) * ( 1.0 + Include_J2*1.5*J2*(R_sun/(r_norm(x,xi))**2)*(1-5*(rz(x,xi)/r_norm(x,xi))**2) )
@@ -304,6 +315,7 @@ def TrainModel(l, ub, points=100, poly_order=30, poly_removed=2, basis_func='CP'
 
     # set up weights dict
     xi = TFCDict({'x':onp.zeros(H(x).shape[1]), 'y':onp.zeros(H(x).shape[1]), 'z':onp.zeros(H(x).shape[1])})
+    # ic(H([1]), x)
     
     # set up initial guess
     # xi['x'] = onp.dot(onp.linalg.pinv(jacfwd(rx,1)(np.array([0]),xi)['x']),r0[0:1]-rx(np.array([0]),xi))
@@ -479,12 +491,24 @@ def TrainModel(l, ub, points=100, poly_order=30, poly_removed=2, basis_func='CP'
 
 
 
-def train_models(points=[51], poly_orders=[50], poly_removes=[2], basis_funcs=['LeP'], methods = ["pinv"], plot=False, save_orbit=False, run_type='TFC'):
+def train_models(points=[51], poly_orders=[50], poly_removes=[2], basis_funcs=['CP'], methods = ["pinv"], plot=False, save_orbit=False, run_type='TFC'):
     data = []
     total_start = time.time_ns()/(10 ** 9)
+    # Get the basis functions from the TFC class
+    # for i in range(10):
+    #     myTfc = utfc(10,2,10, basis='CP', x0=0,xf=1)
+    #     x = myTfc.x # Collocation points from the TFC class
+
+    #     # Get the basis functions from the TFC class
+    #     H = myTfc.H
+    #     H0 = lambda x: H(np.zeros_like(x))
+    #     Hf = lambda x: H(ub*np.ones_like(x))
+
+
 
 
     for way in [True]:
+        skip=False ##  Variable to skip over fitst n results as seed is repeated 
         for poly_order in poly_orders:
             for poly_remove in poly_removes:
                 for basis_func in basis_funcs:
@@ -493,7 +517,7 @@ def train_models(points=[51], poly_orders=[50], poly_removes=[2], basis_funcs=['
                             for i in range(num_runs): 
                                 print(f'\nTraining {way, poly_order, poly_remove, basis_func, method, point, i}')
                                 l = LambertEq(print=False)
-                                l.Get_Lambert_Sun(shortway=way, defined=True)
+                                l.Get_Lambert_Sun(shortway=way, defined=False)
 
                                 _deltat = l.TOF*24*3600
                                 ub = float(_deltat/l.tnc)
@@ -506,7 +530,10 @@ def train_models(points=[51], poly_orders=[50], poly_removes=[2], basis_funcs=['
                                                             method = method, 
                                                             plot=plot, 
                                                             save_orbit=save_orbit,
-                                                            run_type=run_type)
+                                                            run_type=run_type,
+                                                            skip=skip)
+                                skip=False
+
 
 
                                 if Include_J2:
@@ -527,7 +554,7 @@ def train_models(points=[51], poly_orders=[50], poly_removes=[2], basis_funcs=['
         display(TrainingDf)
         print('\n')
 
-        TrainingStats = TrainingDf.groupby(['Shortway', 'basis_function', 'method', 'poly_order', 'poly_remove'])[['PK Loss', 'TFC Loss', 'Loss Ratio','Training Time','CompEff']].median()
+        TrainingStats = TrainingDf.groupby(['Shortway', 'basis_function', 'method', 'poly_order', 'points','poly_remove'])[['PK Loss', 'TFC Loss', 'Loss Ratio','Training Time','CompEff']].median()
 
         TrainingStats['PK Loss'] = TrainingStats['PK Loss'].map(lambda x: '%.5e' % x)
         TrainingStats['TFC Loss'] = TrainingStats['TFC Loss'].map(lambda x: '%.5e' % x)
@@ -549,9 +576,10 @@ def train_models(points=[51], poly_orders=[50], poly_removes=[2], basis_funcs=['
 
         print('\n')
         display(TrainingDf)
+        # TrainingDf.to_pickle("Training_DF_report.pkl")
         print('\n')
 
-        TrainingStats = TrainingDf.groupby(['Shortway', 'basis_function', 'method', 'poly_order', 'poly_remove'])['Loss', 'Training Time', 'CompEff'].median()
+        TrainingStats = TrainingDf.groupby(['Shortway', 'basis_function', 'method', 'poly_order', 'points', 'poly_remove'])['Loss', 'Training Time', 'CompEff'].median()
 
         TrainingStats[['Percent 1e-10', 
                     'Percent 1e-12', 
@@ -565,7 +593,6 @@ def train_models(points=[51], poly_orders=[50], poly_removes=[2], basis_funcs=['
 
         print('\n')
         display(TrainingStats)
-        # TrainingStats.to_pickle("Training_DF")
         print('\n')
 
     return TrainingDf, TrainingStats
@@ -579,8 +606,9 @@ def train_models(points=[51], poly_orders=[50], poly_removes=[2], basis_funcs=['
 
 if config=='SingleTFC':
     TrainingDf, TrainingStats = train_models(poly_orders=[50], points=[51], save_orbit=True, plot=True, run_type='TFC')
+    
 if config=='SingleXTFC':
-    TrainingDf, TrainingStats = train_models(points=[100], poly_orders=[100], poly_removes=[-1], basis_funcs=['ELMTanh'], methods = ["lstsq"],  save_orbit=True, plot=True, run_type='XTFC')
+    TrainingDf, TrainingStats = train_models(points=[200], poly_orders=[100], poly_removes=[-1], basis_funcs=['ELMTanh'], methods = ["lstsq"],  save_orbit=True, plot=True, run_type='XTFC')
 
 
 # In[1]:
@@ -628,14 +656,16 @@ if config=='SeedsXTFC':
 ### Sweep over polynomial orders ###
 if config=='PolyOrderTFC':
     poly_orders=list(range(2,200, 2))
-    TrainingDf, TrainingStats = train_models(poly_orders=poly_orders, points=[200])
+    TrainingDf, TrainingStats = train_models(poly_orders=poly_orders, basis_funcs=['CP', 'ELMTanh'])
+    TrainingDf.to_pickle('RunTimeComparison.pkl')
+    
 
-    fig = plt.figure(figsize=set_size(483.69687*1.05, 1, subplots = (2,1)))
-    ax = plt.gca()
-    ax.semilogy(poly_orders, TrainingDf['Loss'], 'b+', markersize=5, markeredgewidth=0.01)
-    ax.grid(which='major', color='#DDDDDD', linewidth=0.8)
-    format_axes(ax=ax, fontsize=20, xlabel = 'Polynomial Order', ylabel=r'Relative Error Magnitude', scale_legend=True)
-    fig.savefig('./Plot/poly_orders.pdf', bbox_inches='tight')
+    # fig = plt.figure(figsize=set_size(483.69687*1.05, 1, subplots = (2,1)))
+    # ax = plt.gca()
+    # ax.semilogy(poly_orders, TrainingDf['Loss'], 'b+', markersize=5, markeredgewidth=0.01)
+    # ax.grid(which='major', color='#DDDDDD', linewidth=0.8)
+    # format_axes(ax=ax, fontsize=20, xlabel = 'Polynomial Order', ylabel=r'Relative Error Magnitude', scale_legend=True)
+    # fig.savefig('./Plot/poly_orders.pdf', bbox_inches='tight')
 
 ### Find Computational Efficiency ###
 if config=='CompEff':
@@ -719,14 +749,15 @@ if config=='PolyRemoveTFC':
 ### Sweep over number of training points ###
 if config=='PointsTFC':
     points=list(range(1,200, 1))
-    TrainingDf, TrainingStats = train_models(points=points)
+    TrainingDf, TrainingStats = train_models(points=points, basis_funcs=['CP', 'ELMTanh'])
+    TrainingDf.to_pickle('RunTimeComparisonPoints.pkl')
     
-    fig = plt.figure(figsize=set_size(483.69687*1.05, 1, subplots = (2,1)))
-    ax = plt.gca()
-    ax.semilogy(points, TrainingDf['Loss'], 'b+', markersize=5 , markeredgewidth=0.01)
-    ax.grid(which='major', color='#DDDDDD', linewidth=0.8)
-    format_axes(ax=ax, fontsize=20, xlabel = 'Number of Training Points ', ylabel=r'Relative Error Magnitude', scale_legend=True)
-    fig.savefig('./Plot/Points.pdf', bbox_inches='tight')
+    # fig = plt.figure(figsize=set_size(483.69687*1.05, 1, subplots = (2,1)))
+    # ax = plt.gca()
+    # ax.semilogy(points, TrainingDf['Loss'], 'b+', markersize=5 , markeredgewidth=0.01)
+    # ax.grid(which='major', color='#DDDDDD', linewidth=0.8)
+    # format_axes(ax=ax, fontsize=20, xlabel = 'Number of Training Points ', ylabel=r'Relative Error Magnitude', scale_legend=True)
+    # fig.savefig('./Plot/Points.pdf', bbox_inches='tight')
 
 
 ############ X-TFC ###############################
