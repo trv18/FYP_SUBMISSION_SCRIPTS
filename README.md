@@ -36,6 +36,18 @@ python3 TFC_3D.py -n <NumRuNs> -J2 <IncludeJ2> -c <config>
       - _CompEffTFC_: Quantify computational efficiency of various TFC configurations.
       - _HeatMapTFC_: Quantify Loss performance for various TFC configurations.
 
+Additional configs may be added by following the template below.  Configs are defined on lines 600 onwards
+
+```python 
+
+if config=='SingleTFC':
+    TrainingDf, TrainingStats = train_models(poly_orders=[50], points=[51], save_orbit=True, plot=True, run_type='TFC')
+    
+if config=='SingleXTFC':
+    TrainingDf, TrainingStats = train_models(points=[200], poly_orders=[100], poly_removes=[-1], basis_funcs=['ELMTanh'], methods = ["lstsq"],  save_orbit=True, plot=True, run_type='XTFC')
+
+```
+
 ## `DEEPXDE_PINN_training.py`
 This code uses the DEEPXDE package to model either 1D, 2D or 3D equations of motion.
 
