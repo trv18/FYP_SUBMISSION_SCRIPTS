@@ -176,7 +176,6 @@ traitlets==5.1.1
 typing_extensions==4.2.0
 tzdata==2022.1
 tzlocal==4.2
-# unicodedata2 @ file:///home/conda/feedstock_root/build_artifacts/unicodedata2_1649111919534/work
 urllib3==1.26.9
 validators==0.18.2
 wandb==0.12.16
