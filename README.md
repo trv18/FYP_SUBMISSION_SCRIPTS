@@ -63,11 +63,12 @@ python3 DEEPXDE_PINN_training.py <RunType>
 The code below can be used to defined and alter the PINN model that is being trained.
 ```python
  net = dde.maps.FNN([1] + [50] * 3 + [1], "sigmoid", "Glorot uniform")
-    net.apply_output_transform(
+ net.apply_output_transform(
         lambda x, y: (ub-x)/ub*r0 + (x/ub)*rf + x/ub*(ub-x)/ub*y
     )
     model = dde.Model(data, net)
 ```
+If no hard boundary conditions are desired remove `apply_output_transform` from network
 
 ## `DNN_Training.py`
   This code used tensorflow to train a neural network using specified model configurations. It uses the WandB API to keep track of training runs and some alteration may be required to configure the code to run with the user's WandB account. Alternatively the sections of the code that require WandB can be commented out. 
