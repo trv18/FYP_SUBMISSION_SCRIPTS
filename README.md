@@ -43,7 +43,7 @@ Note that the 2D and 3D versions converge sporadically for $\Delta t$/tnc \> 0.1
 
 **Execution Command** : 
 ```bash 
-DEEPXDE_PINN_training.py <RunType>
+python3 DEEPXDE_PINN_training.py <RunType>
 ```
   - \<RunType\> : Specifies what problem to solve. Must be one of [ 1D, 2D , 3D ]
 
@@ -52,10 +52,11 @@ DEEPXDE_PINN_training.py <RunType>
   
  **Execution Command** : 
 ```bash 
-DNN_Training.py <RunType>
+python3 DNN_Training.py <RunType>
 ```
 
   - \<RunType\> : Specifies whether to train specified  to solve. Must be one of [ 1D, 2D , 3D ]
-  - 
-## `Visualise_Tools.py` and `OrbMech_Utilities.py`
+
+
+## `Visualise_Tools.py`,  `OrbMech_Utilities.py`, `DNN_Tools`
 A variety of tools and functions to aide in execution of the code. 
