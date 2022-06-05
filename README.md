@@ -52,11 +52,11 @@ python3 DEEPXDE_PINN_training.py <RunType>
   
  **Execution Command** : 
 ```bash 
-python3 DNN_Training.py <RunType> <NumRuns>=1
+python3 DNN_Training.py <RunType> [<NumRuns>]
 ```
 
   - \<RunType\> : Specifies whether to train specified model or conduct WandB hyperparameter sweep. Must be one of [_single_, _sweep_]
-  - \<NumRuns\> : _OPtional Parameter_ Specifies how many models to train if conducting WandB sweep. 
+  - \<NumRuns\> : _Optional Parameter_. Specifies how many models to train if conducting WandB sweep. 
 
 
 ## `Visualise_Tools.py`,  `OrbMech_Utilities.py`, `DNN_Tools`
